@@ -1,0 +1,67 @@
+﻿@model IEnumerable<ECommerce.Models.Empresa>
+
+@{
+    ViewBag.Title = "Empresas";
+}
+
+<h2>Empresas</h2>
+
+@Html.ValidationSummary(true, "", new { @class = "text-danger" })
+<p>
+    @Html.ActionLink("Nueva Empresa", "Create",new { }, new { @class = "btn btn-primary" })
+</p>
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.Ciudad.Nombre)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Departamento.Nombre)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Nombre)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Telefono)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Direccion)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Logo)
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.Ciudad.Nombre)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Departamento.Nombre)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Nombre)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Telefono)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Direccion)
+        </td>
+        <td>
+           @if (!string.IsNullOrEmpty(item.Logo))
+           {
+            <img src="@Url.Content(item.Logo)" alt="Logo" style="width:100px;height:auto;max-width:100%;" />
+           }
+        </td>
+        <td>
+            @Html.ActionLink("Editar", "Edit", new { id=item.EmpresaID }, new { @class = "btn btn-warning" }) 
+            @Html.ActionLink("Detalles", "Details", new { id=item.EmpresaID }, new { @class = "btn btn-info" }) 
+            @Html.ActionLink("Eliminar", "Delete", new { id = item.EmpresaID }, new { @class = "btn btn-danger" });
+        </td>
+    </tr>
+}
+
+</table>

@@ -1,0 +1,64 @@
+﻿@model PagedList.IPagedList < ECommerce.Models.Venta >
+
+@using PagedList.Mvc;
+
+@{
+    ViewBag.Title = "Ordenes";
+}
+
+
+
+
+<h2>Pedidos</h2>
+
+<p>
+    @Html.ActionLink("Nuevo Pedido", "Create")
+</p>
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.FirstOrDefault().Cliente.FullName)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.FirstOrDefault().Estado.Descripcion)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.FirstOrDefault().Fecha)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.FirstOrDefault().Comentarios)
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.Cliente.FullName)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Estado.Descripcion)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Fecha)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Comentarios)
+        </td>
+        <td>
+            @Html.ActionLink("Edit", "Edit", new { id=item.VentaID }) |
+            @Html.ActionLink("Details", "Details", new { id=item.VentaID }) |
+            @Html.ActionLink("Delete", "Delete", new { id=item.VentaID })
+        </td>
+    </tr>
+}
+
+</table>
+Página: @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber)  de: @Model.PageCount
+@Html.PagedListPager(Model, page => Url.Action("Index", new
+{
+    page,
+    sortOrder =
+    ViewBag.CurrentSort,
+    currentFilter = ViewBag.CurrentFilter
+}))

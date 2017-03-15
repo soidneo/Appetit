@@ -1,0 +1,58 @@
+﻿@model IEnumerable<ECommerce.Models.Compra>
+
+@{
+    ViewBag.Title = "Compras";
+}
+
+<h2>Index</h2>
+
+<p>
+    @Html.ActionLink("Comprar", "Create")
+</p>
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.Bodega.Nombre)
+        </th>
+        
+        <th>
+            @Html.DisplayNameFor(model => model.FormaPago.Descripcion)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Proveedor.FullName)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Fecha)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Comentarios)
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.Bodega.Nombre)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.FormaPago.Descripcion)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Proveedor.FullName)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Fecha)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Comentarios)
+        </td>
+        <td>
+            @Html.ActionLink("Edit", "Edit", new { id=item.CompraID }) |
+            @Html.ActionLink("Details", "Details", new { id=item.CompraID }) |
+            @Html.ActionLink("Delete", "Delete", new { id=item.CompraID })
+        </td>
+    </tr>
+}
+
+</table>

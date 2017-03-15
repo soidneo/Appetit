@@ -1,0 +1,137 @@
+﻿@model ECommerce.Models.Producto
+
+@{
+    ViewBag.Title = "Detalles";
+}
+
+<h2>Detalles</h2>
+
+
+<div class="row">
+    <div class="col-md-6">
+        <div>
+            <h4>Producto</h4>
+            <hr />
+            <dl class="dl-horizontal">
+                <dt>
+                    @Html.DisplayNameFor(model => model.Categoria.Descripcion)
+                </dt>
+
+                <dd>
+                    @Html.DisplayFor(model => model.Categoria.Descripcion)
+                </dd>
+
+
+                <dd>
+                    @Html.DisplayFor(model => model.Empresa.Nombre)
+                </dd>
+
+                <dt>
+                    @Html.DisplayNameFor(model => model.Impuesto.Descripcion)
+                </dt>
+
+                <dd>
+                    @Html.DisplayFor(model => model.Impuesto.Descripcion)
+                </dd>
+
+                <dt>
+                    @Html.DisplayNameFor(model => model.Descripcion)
+                </dt>
+
+                <dd>
+                    @Html.DisplayFor(model => model.Descripcion)
+                </dd>
+
+                <dt>
+                    @Html.DisplayNameFor(model => model.Referencia)
+                </dt>
+
+                <dd>
+                    @Html.DisplayFor(model => model.Referencia)
+                </dd>
+
+                <dt>
+                    @Html.DisplayNameFor(model => model.Precio)
+                </dt>
+
+                <dd>
+                    @Html.DisplayFor(model => model.Precio)
+                </dd>
+
+                <dt>
+                    @Html.DisplayNameFor(model => model.Image)
+                </dt>
+
+                <dd>
+                    @if (!string.IsNullOrEmpty(Model.Image))
+            {
+                        <img src="@Url.Content(Model.Image)" alt="Logo" style="width:150px;height:auto;max-width:100%;" />
+                    }
+                </dd>
+
+                <dt>
+                    @Html.DisplayNameFor(model => model.Comentarios)
+                </dt>
+
+                <dd>
+                    @Html.DisplayFor(model => model.Comentarios)
+                </dd>
+
+            </dl>
+        </div>
+        <p>
+            @Html.ActionLink("Edit", "Edit", new { id = Model.ProductoID }, new { @class = "btn btn-warning" })
+            @Html.ActionLink("Volver", "Index", new { }, new { @class = "btn btn-primary" })
+        </p>
+    </div>
+    <div class="col-md-6">
+        <div>
+            <h2></h2>
+            <h4>Inventario  </h4>
+            <hr />
+            @if (Model.Inventarios.Count == 0)
+            {
+                <h5>No hay productos en inventario</h5>
+            }
+            else
+            {
+                <table class="table">
+                    <tr>
+                        <th>
+                            Bodega
+                        </th>
+                        <th>
+                            Inventario
+                        </th>
+                        <th>
+                            
+                        </th>
+                    </tr>
+
+                    @foreach (var item in Model.Inventarios.ToList())
+                {
+                        <tr>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Bodega.Nombre)
+                            </td>
+                            <td align="right">
+                                @Html.DisplayFor(modelItem => item.stock)
+                            </td>
+                            <td align="left">
+                                @Html.DisplayFor(modelItem => item.Producto.Unidad.Descripcion)s
+                            </td>
+                        </tr>
+                    }
+                    <tr>
+                        <td>
+                            <strong>Total</strong>
+                        </td>
+                        <td align="right">
+                            <strong>@Html.DisplayFor(modelItem => Model.stock)</strong>
+                        </td>
+                    </tr>
+                </table>
+            }
+        </div>
+    </div>
+</div>

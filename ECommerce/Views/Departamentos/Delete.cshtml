@@ -1,0 +1,32 @@
+﻿@model ECommerce.Models.Departamento
+
+@{
+    ViewBag.Title = "Eliminar Departamento";
+}
+
+<h2>Eliminar Departamento</h2>
+
+<h3>Está usted seguro de eliminar este registro?</h3>
+<div>
+    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Nombre)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Nombre)
+        </dd>
+
+    </dl>
+
+    @using (Html.BeginForm()) {
+        @Html.AntiForgeryToken()
+
+        <div class="form-actions no-color">
+            <input type="submit" value="Eliminar" class="btn btn-danger" /> 
+            @Html.ActionLink("Volver", "Index", new { }, new { @class = "btn btn-primary" })
+        </div>
+    }
+</div>

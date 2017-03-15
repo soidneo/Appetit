@@ -1,0 +1,58 @@
+﻿@model IEnumerable<ECommerce.Models.CajaVista>
+
+<table class="table">
+    <tr>
+        <th>
+            Codigo
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Nombre)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Estado)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Fecha)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Comentarios)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Tipo)
+        </th>
+    </tr>
+    @foreach (var item in Model)
+    {
+        <tr>
+            @if (item.Tipo == "Cliente")
+            {
+                @:<tr class="info">
+        }
+
+        @if (item.Tipo == "Mesa")
+        {
+          @:<tr class="success">
+        }
+
+        <td>
+            @Html.DisplayFor(modelItem => item.VentaID)
+        </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Nombre)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Estado)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Fecha)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Comentarios)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Tipo)
+                    </td>
+                </tr>
+    }
+</table>
+
