@@ -10,7 +10,7 @@ using ECommerce.Models;
 
 namespace ECommerce.Controllers
 {
-    [Authorize(Roles = "User")]
+    [Authorize(Roles = "Admin")]
     public class FormaPagosController : Controller
     {
         private ECommerceContext db = new ECommerceContext();

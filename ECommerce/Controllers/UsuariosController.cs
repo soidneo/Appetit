@@ -12,7 +12,7 @@ using ECommerce.Clases;
 
 namespace ECommerce.Controllers
 {
-    [Authorize(Roles = "Admin")]
+    [Authorize(Roles = "SuperAdmin")]
     public class UsuariosController : Controller
     {
         private ECommerceContext db = new ECommerceContext();

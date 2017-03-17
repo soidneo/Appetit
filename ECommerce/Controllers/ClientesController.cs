@@ -18,21 +18,7 @@ namespace ECommerce.Controllers
         // GET: Clientes
         public ActionResult Index()
         {
-            var user = db.Usuarios.Where(u => u.UserName == User.Identity.Name).FirstOrDefault();
-            var clientes = new List<Cliente>();
-            if (user != null)
-            {
-                var qry = (from cl in db.Clientes
-                           join ec in db.EmpresaClientes on cl.ClienteID equals ec.ClienteID
-                           join em in db.Empresas on ec.EmpresaID equals em.EmpresaID
-                           where em.EmpresaID == user.EmpresaID
-                           select new { cl }).ToList();
-                
-                foreach (var item in qry)
-                {
-                    clientes.Add(item.cl);
-                }
-            }
+            var clientes = db.Clientes.Include(u => u.Ciudad).Include(u => u.Departamento).Include(u => u.Empresa);
             return View(clientes);
         }
 
@@ -56,7 +42,12 @@ namespace ECommerce.Controllers
         {
             ViewBag.CiudadID = new SelectList(CombosHelper.GetCiudades(0), "CiudadID", "Nombre");
             ViewBag.DepartamentoID = new SelectList(CombosHelper.GetDepartamentos(), "DepartamentoID", "Nombre");
-            return View();
+            var user = db.Usuarios.Where(u => u.UserName == User.Identity.Name).FirstOrDefault();
+            var cliente = new Cliente
+            {
+                EmpresaID = user.EmpresaID,
+            };
+            return View(cliente);
         }
 
         // POST: Clientes/Create
@@ -66,6 +57,7 @@ namespace ECommerce.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Create(Cliente cliente)
         {
+            var modelErrors = new List<string>();
             if (ModelState.IsValid)
             {
                 using (var transaction = db.Database.BeginTransaction())
@@ -82,14 +74,7 @@ namespace ECommerce.Controllers
                             return View(cliente);
 
                         }
-                        UsuariosHelper.CreateUserAsp(cliente.UserName, "Cliente");
-                        var user = db.Usuarios.Where(u => u.UserName == User.Identity.Name).FirstOrDefault();
-                        var empresaCliente = new EmpresaCliente
-                        {
-                            EmpresaID = user.EmpresaID,
-                            ClienteID = cliente.ClienteID,
-                        };
-                        db.EmpresaClientes.Add(empresaCliente);
+                        UsuariosHelper.CreateUserAsp(cliente.UserName, "Customer");
                         db.SaveChanges();
                         transaction.Commit();
                         return RedirectToAction("Index");
@@ -101,7 +86,19 @@ namespace ECommerce.Controllers
                     }
                 }
             }
-
+            else
+            {
+                
+                foreach (var modelState in ModelState.Values)
+                {
+                    foreach (var modelError in modelState.Errors)
+                    {
+                        modelErrors.Add(modelError.ErrorMessage);
+                    }
+                }
+                // do something with the error list :)
+            }
+            ViewBag.errores = modelErrors;
             ViewBag.CiudadID = new SelectList(CombosHelper.GetCiudades(0), "CiudadID", "Nombre", cliente.CiudadID);
             ViewBag.DepartamentoID = new SelectList(CombosHelper.GetDepartamentos(), "DepartamentoID", "Nombre", cliente.DepartamentoID);
             return View(cliente);
@@ -168,9 +165,6 @@ namespace ECommerce.Controllers
         {
             var cliente = db.Clientes.Find(id);
             var user = db.Usuarios.Where(u => u.UserName == User.Identity.Name).FirstOrDefault();
-            var empresaCliente = db.EmpresaClientes.Where(ec => ec.EmpresaID == user.EmpresaID &&
-            ec.ClienteID == cliente.ClienteID).FirstOrDefault();
-            db.EmpresaClientes.Remove(empresaCliente);
             using (var transaction = db.Database.BeginTransaction())
             {
                 var respuesta = DbHelper.Guardar(db);

@@ -12,7 +12,7 @@ using PagedList;
 
 namespace ECommerce.Controllers
 {
-    [Authorize(Roles = "User")]
+    [Authorize(Roles = "Admin")]
     public class ProductosController : Controller
     {
         private ECommerceContext db = new ECommerceContext();

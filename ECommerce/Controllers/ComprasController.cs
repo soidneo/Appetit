@@ -41,7 +41,6 @@ namespace ECommerce.Controllers
         public ActionResult Create()
         {
             var user = db.Usuarios.Where(u => u.UserName == User.Identity.Name).FirstOrDefault();
-            ViewBag.ClienteID = new SelectList(CombosHelper.GetClientes(user.EmpresaID), "ClienteID", "FullName");
             var compra = new NuevaCompraVista
             {
                 Fecha = DateTime.Now,

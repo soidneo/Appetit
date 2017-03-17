@@ -12,8 +12,10 @@ using ECommerce.Clases;
 
 namespace ECommerce.Controllers
 {
+    [Authorize(Roles = "VirtualWaiter  ")]
     public class PedidoMesasController : Controller
     {
+        
         private ECommerceContext db = new ECommerceContext();
 
         public ActionResult AddProducto()

@@ -28,7 +28,7 @@ namespace ECommerce.Clases
                     {
                         EmpresaID = user.EmpresaID,
                         ClienteID = vista.ClienteID,
-                        Fecha = vista.Fecha,
+                        Fecha = DateTime.Now,
                         Comentarios = vista.Comentarios,
                         EstadoID = DbHelper.GetEstado("Creada", db),
                     };

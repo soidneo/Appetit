@@ -230,6 +230,8 @@
     <Compile Include="Handlers\KeepAlive.cs" />
     <Compile Include="Hubs\ChatHub.cs" />
     <Compile Include="Hubs\MessagesHub.cs" />
+    <Compile Include="Hubs\NotificationHub.cs" />
+    <Compile Include="Models\NotificationComponent.cs" />
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\AddProductoVista.cs" />
@@ -248,7 +250,6 @@
     <Compile Include="Models\Departamento.cs" />
     <Compile Include="Models\ECommerceContext.cs" />
     <Compile Include="Models\Empresa.cs" />
-    <Compile Include="Models\EmpresaCliente.cs" />
     <Compile Include="Models\Estado.cs" />
     <Compile Include="Models\Factura.cs" />
     <Compile Include="Models\FacturaDetalle.cs" />
@@ -568,6 +569,7 @@
     <Content Include="Scripts\moment-with-locales.min.js" />
     <Content Include="Scripts\moment.js" />
     <Content Include="Scripts\moment.min.js" />
+    <Content Include="Scripts\Notifications.js" />
     <Content Include="Scripts\respond.js" />
     <Content Include="Scripts\respond.min.js" />
     <Content Include="Scripts\_references.js" />

@@ -46,8 +46,6 @@ namespace ECommerce.Models
 
         public DbSet<VentaDetalleTmp> VentaDetalleTmps { get; set; }
 
-        public DbSet<EmpresaCliente> EmpresaClientes { get; set; }
-
         public DbSet<Receta> Recetas { get; set; }
 
         public DbSet<RecetaDetalle> RecetaDetalles { get; set; }

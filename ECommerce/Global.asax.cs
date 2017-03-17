@@ -1,4 +1,5 @@
 ﻿using ECommerce.Clases;
+using ECommerce.Hubs;
 using ECommerce.Migrations;
 using ECommerce.Models;
 using System;
@@ -30,7 +31,13 @@ namespace ECommerce
             BundleConfig.RegisterBundles(BundleTable.Bundles);
             SqlDependency.Start(connString);
         }
-
+        protected void Session_Start(object sender, EventArgs e)
+        {
+            NotificationComponent NC = new NotificationComponent();
+            var currentTime = DateTime.Now;
+            HttpContext.Current.Session["LastUpdated"] = currentTime;
+            NC.RegisterNotification(currentTime);
+        }
         protected void Application_End()
         {
             //Stop SQL dependency

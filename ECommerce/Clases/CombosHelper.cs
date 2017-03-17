@@ -33,26 +33,7 @@ namespace ECommerce.Clases
             return ciudades.OrderBy(c => c.Nombre).ToList();
         }
 
-        public static List<Cliente> GetClientes(int EmpresaID)
-        {
-            var qry = (from cl in db.Clientes
-                       join ec in db.EmpresaClientes on cl.ClienteID equals ec.ClienteID
-                       join em in db.Empresas on ec.EmpresaID equals em.EmpresaID
-                       where em.EmpresaID == EmpresaID
-                       select new { cl }).ToList();
-            var clientes = new List<Cliente>();
-            foreach (var item in qry)
-            {
-                clientes.Add(item.cl);
-            }
-
-            clientes.Add(new Cliente
-            {
-                ClienteID = 0,
-                Nombre = "[Seleccione un cliente...]"
-            });
-            return clientes.OrderBy(c => c.Nombre).ThenBy(d => d.Apellido).ToList();
-        }
+        
 
         public static List<FormaPago> GetFormaPagos(int EmpresaID)
         {
@@ -129,6 +110,16 @@ namespace ECommerce.Clases
                 Descripcion = "[Seleccione una receta...]"
             });
             return recetas.OrderBy(r => r.Descripcion).ToList();
+        }
+        public static List<Cliente> GetClientes(int empresaID)
+        {
+            var clientes = db.Clientes.Where(i => i.EmpresaID == empresaID).ToList();
+            clientes.Add(new Cliente
+            {
+                ClienteID = 0,
+                Nombre = "[Seleccione un cliente...]"
+            });
+            return clientes.OrderBy(i => i.FullName).ToList();
         }
 
         public static List<Producto> getProductos(int empresaID)

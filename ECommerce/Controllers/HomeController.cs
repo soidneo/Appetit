@@ -1,4 +1,5 @@
-﻿using ECommerce.Models;
+﻿using ECommerce.Hubs;
+using ECommerce.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -38,6 +39,15 @@ namespace ECommerce.Controllers
         public ActionResult Chat()
         {
             return View();
+        }
+        public JsonResult GetNotificationContacts()
+        {
+            var notificationRegisterTime = Session["LastUpdated"] != null ? Convert.ToDateTime(Session["LastUpdated"]) : DateTime.Now;
+            NotificationComponent NC = new NotificationComponent();
+            var list = NC.GetContacts(notificationRegisterTime);
+            //update session here for get only new added contacts (notification)
+            Session["LastUpdate"] = DateTime.Now;
+            return new JsonResult { Data = list, JsonRequestBehavior = JsonRequestBehavior.AllowGet };
         }
     }
 }

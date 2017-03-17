@@ -12,7 +12,7 @@ using PagedList;
 
 namespace ECommerce.Controllers
 {
-    [Authorize(Roles ="User")]
+    [Authorize(Roles ="Customer")]
     public class VentasController : Controller
     {
         private ECommerceContext db = new ECommerceContext();
@@ -91,8 +91,8 @@ namespace ECommerce.Controllers
         public ActionResult Index(int? page = null)
         {
             page = (page ?? 1);
-            var user = db.Usuarios.Where(u => u.UserName == User.Identity.Name).FirstOrDefault();
-            var ventas = db.Ventas.Where(v => v.EmpresaID == user.EmpresaID)
+            var cliente = db.Clientes.Where(u => u.UserName == User.Identity.Name).FirstOrDefault();
+            var ventas = db.Ventas.Where(v => v.EmpresaID == cliente.EmpresaID)
                 .Include(v => v.Cliente)
                 .Include(v => v.Estado)
                 .OrderBy(v => v.Fecha)
@@ -118,11 +118,11 @@ namespace ECommerce.Controllers
         // GET: Ventas/Create
         public ActionResult Create()
         {
-            var user = db.Usuarios.Where(u => u.UserName == User.Identity.Name).FirstOrDefault();
-            ViewBag.ClienteID = new SelectList(CombosHelper.GetClientes(user.EmpresaID), "ClienteID", "FullName");
+            var cliente = db.Clientes.Where(u => u.UserName == User.Identity.Name).FirstOrDefault();
             var vista = new NuevaOrdenVista
             {
                 Fecha = DateTime.Now,
+                ClienteID = cliente.ClienteID,
                 Detalles = db.VentaDetalleTmps.Where(v => v.UserName == User.Identity.Name).ToList(),
             };
             return View(vista);
@@ -146,8 +146,6 @@ namespace ECommerce.Controllers
             }
             var user = db.Usuarios.Where(u => u.UserName == User.Identity.Name).FirstOrDefault();
             vista.Detalles = db.VentaDetalleTmps.Where(v => v.UserName == User.Identity.Name).ToList();
-            ViewBag.ClienteID = new SelectList(CombosHelper.GetClientes(user.EmpresaID), "ClienteID", "fullName");
-
             return View(vista);
         }
 
