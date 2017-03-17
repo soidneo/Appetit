@@ -21,7 +21,7 @@ namespace ECommerce.Controllers
         {
             var user = db.Usuarios.Where(u => u.UserName == User.Identity.Name).FirstOrDefault();
             ViewBag.ProductoID = new SelectList(db.Productos.Where(p => p.EmpresaID == user.EmpresaID &&
-            p.RecetaID == null), "ProductoID", "Descripcion");
+            p.RecetaID != null), "ProductoID", "Descripcion");
             return PartialView();
         }
 

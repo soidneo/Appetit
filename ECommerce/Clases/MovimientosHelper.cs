@@ -274,7 +274,7 @@ namespace ECommerce.Clases
                     {
                         EmpresaID = mesa.EmpresaID,
                         MesaID = vista.MesaID,
-                        Fecha = vista.Fecha,
+                        Fecha = DateTime.Now,
                         Comentarios = vista.Comentarios,
                         EstadoID = DbHelper.GetEstado("Creada", db),
                     };
