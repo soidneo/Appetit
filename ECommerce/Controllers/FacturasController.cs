@@ -18,7 +18,7 @@ namespace ECommerce.Controllers
         {
             var user = db.Usuarios.Where(u => u.UserName == User.Identity.Name).FirstOrDefault();
             ViewBag.ProductoID = new SelectList(db.Productos.Where(p => p.EmpresaID == user.EmpresaID &&
-            p.RecetaID != null), "ProductoID", "Descripcion");
+            p.RecetaID != null || p.EmpresaID == user.EmpresaID && p.RecetaID == 1), "ProductoID", "Descripcion");
             return PartialView();
         }
         [HttpPost]
@@ -59,6 +59,28 @@ namespace ECommerce.Controllers
             ViewBag.ProductoID = new SelectList(db.Productos.Where(p => p.EmpresaID == user.EmpresaID &&
             p.RecetaID != null), "ProductoID", "Descripcion");
             return PartialView();
+        }
+        public ActionResult DelProducto(int? id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            var facturaDetallesTmp = db.FacturaDetalleTmps.Where(
+                    u => u.UserName == User.Identity.Name && u.ProductoID == id).FirstOrDefault();
+            if (facturaDetallesTmp == null)
+            {
+                return HttpNotFound();
+            }
+            db.FacturaDetalleTmps.Remove(facturaDetallesTmp);
+            var respuesta = DbHelper.Guardar(db);
+            if (respuesta.Succeeded == false)
+            {
+                ModelState.AddModelError(string.Empty, respuesta.Message);
+                return RedirectToAction("Create");
+            }
+
+            return RedirectToAction("Create");
         }
 
         // GET: Facturas

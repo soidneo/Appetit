@@ -10,10 +10,18 @@
 <p>
     @Html.ActionLink("Create New", "Create")
 </p>
+@using (Html.BeginForm("Index", "Unidades", FormMethod.Get))
+{
+    <p>
+        Buscar: @Html.TextBox("SearchString", ViewBag.CurrentFilter as string)
+        <input type="submit" value="Search" />
+    </p>
+}
 <table class="table">
     <tr>
         <th>
             @Html.DisplayNameFor(model => model.FirstOrDefault().Descripcion)
+            @Html.ActionLink("Descripcion", "Index", new { sortOrder = ViewBag.NameSortParm, currentFilter = ViewBag.CurrentFilter })
         </th>
         <th></th>
     </tr>
@@ -39,8 +47,8 @@
 
 </table>
 Página: @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber)  de: @Model.PageCount
-@Html.PagedListPager(Model, page => Url.Action("Index", new
-{
+@Html.PagedListPager(Model, page => Url.Action("Index", 
+    new{
     page,
     sortOrder =
     ViewBag.CurrentSort,

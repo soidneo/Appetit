@@ -149,7 +149,7 @@ namespace ECommerce.Controllers
         {
             var user = db.Usuarios.Where(u => u.UserName == User.Identity.Name).FirstOrDefault();
             ViewBag.ProductoID = new SelectList(db.Productos.Where(p => p.EmpresaID == user.EmpresaID &&
-            p.RecetaID == null), "ProductoID", "Descripcion");
+            p.RecetaID == null || p.RecetaID == 1), "ProductoID", "Descripcion");
             return PartialView();
         }
 
@@ -191,6 +191,29 @@ namespace ECommerce.Controllers
             ViewBag.ProductoID = new SelectList(CombosHelper.getProductos(user.EmpresaID), "ProductoID", "Descripcion");
             return PartialView();
         }
+        public ActionResult DelProducto(int? id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            var compraDetallesTmp = db.CompraDetalleTmps.Where(
+                    u => u.UserName == User.Identity.Name && u.ProductoID == id).FirstOrDefault();
+            if (compraDetallesTmp == null)
+            {
+                return HttpNotFound();
+            }
+            db.CompraDetalleTmps.Remove(compraDetallesTmp);
+            var respuesta = DbHelper.Guardar(db);
+            if (respuesta.Succeeded == false)
+            {
+                ModelState.AddModelError(string.Empty, respuesta.Message);
+                return RedirectToAction("Create");
+            }
+
+            return RedirectToAction("Create");
+        }
+
         protected override void Dispose(bool disposing)
         {
             if (disposing)

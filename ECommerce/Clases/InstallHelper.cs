@@ -14,6 +14,7 @@ namespace ECommerce.Clases
         {
             CrearCiudadesDeptos();
             insEmpresa();
+            insReceta();
         }
 
         public static void CrearUnidades()
@@ -1228,6 +1229,21 @@ namespace ECommerce.Clases
                     CiudadID = 801,
                 };
                 db.Empresas.Add(empresa);
+                db.SaveChanges();
+            }
+        }
+        public static void insReceta()
+        {
+            var recetaCount = db.Recetas.Count();
+            if (recetaCount < 1)
+            {
+                var receta = new Receta
+                {
+                    RecetaID = 1,
+                    Descripcion = "[Terminado]",
+                    EmpresaID = 1,
+                };
+                db.Recetas.Add(receta);
                 db.SaveChanges();
             }
         }

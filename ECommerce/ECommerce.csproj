@@ -200,6 +200,7 @@
     <Compile Include="Clases\InstallHelper.cs" />
     <Compile Include="Clases\MailHelper.cs" />
     <Compile Include="Clases\MovimientosHelper.cs" />
+    <Compile Include="Clases\PaginatedList.cs" />
     <Compile Include="Clases\UsuariosHelper.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\BodegasController.cs" />
@@ -711,6 +712,8 @@
     <Content Include="Views\PedidoMesas\Edit.cshtml" />
     <Content Include="Views\PedidoMesas\Index.cshtml" />
     <Content Include="Views\PedidoMesas\AddProducto.cshtml" />
+    <Content Include="Views\Productos\Ingredientes.cshtml" />
+    <Content Include="Views\Productos\Create2.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

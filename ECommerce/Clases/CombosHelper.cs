@@ -104,11 +104,6 @@ namespace ECommerce.Clases
         public static List<Receta> GetRecetas(int EmpresaID)
         {
             var recetas = db.Recetas.Where(r => r.EmpresaID == EmpresaID).ToList();
-            recetas.Add(new Receta
-            {
-                RecetaID = 0,
-                Descripcion = "[Seleccione una receta...]"
-            });
             return recetas.OrderBy(r => r.Descripcion).ToList();
         }
         public static List<Cliente> GetClientes(int empresaID)

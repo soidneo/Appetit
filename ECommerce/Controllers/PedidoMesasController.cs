@@ -22,7 +22,7 @@ namespace ECommerce.Controllers
         {
             var mesa = db.Mesas.Where(u => u.Nombre == User.Identity.Name).FirstOrDefault();
             ViewBag.ProductoID = new SelectList(db.Productos.Where(p => p.EmpresaID == mesa.EmpresaID &&
-            p.RecetaID != null), "ProductoID", "Descripcion");
+            p.RecetaID != null || p.RecetaID == 1), "ProductoID", "Descripcion");
             return PartialView();
         }
 

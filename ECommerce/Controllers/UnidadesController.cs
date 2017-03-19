@@ -8,6 +8,7 @@ using System.Web;
 using System.Web.Mvc;
 using ECommerce.Models;
 using PagedList;
+using System.Threading.Tasks;
 
 namespace ECommerce.Controllers
 {
@@ -15,6 +16,43 @@ namespace ECommerce.Controllers
     {
         private ECommerceContext db = new ECommerceContext();
 
+        public ViewResult Index(string sortOrder, string currentFilter, string searchString, int? page)
+        {
+            ViewBag.CurrentSort = sortOrder;
+            ViewBag.NameSortParm = String.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
+
+            if (searchString != null)
+            {
+                page = 1;
+            }
+            else
+            {
+                searchString = currentFilter;
+            }
+
+            ViewBag.CurrentFilter = searchString;
+
+            var unidades = from s in db.Unidades
+                           select s;
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                unidades = unidades.Include(u => u.Empresa).Where(u => u.Descripcion.Contains(searchString));
+            }
+            switch (sortOrder)
+            {
+                case "name_desc":
+                    unidades = unidades.OrderByDescending(u => u.Descripcion);
+                    break;
+                default:  // Name ascending 
+                    unidades = unidades.OrderBy(u => u.Descripcion);
+                    break;
+            }
+
+            int pageSize = 3;
+            int pageNumber = (page ?? 1);
+            return View(unidades.ToPagedList(pageNumber, pageSize));
+        }
+        /*
         // GET: Unidades
         public ActionResult Index(int? page = null)
         {
@@ -37,7 +75,7 @@ namespace ECommerce.Controllers
             }
             return View(unidad);
         }
-
+        */
         // GET: Unidades/Create
         public ActionResult Create()
         {

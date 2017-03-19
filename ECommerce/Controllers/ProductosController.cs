@@ -29,7 +29,24 @@ namespace ECommerce.Controllers
             var productos = db.Productos
                 .Include(p => p.Categoria)
                 .Include(p => p.Impuesto)
-                .Where(p => p.EmpresaID == user.EmpresaID)
+                .Where(p => p.EmpresaID == user.EmpresaID && p.RecetaID != null)
+                .OrderBy(p => p.Categoria.Descripcion)
+                .ThenBy(p => p.Descripcion);
+            return View(productos.ToPagedList((int)page, 4));
+        }
+
+        public ActionResult Ingredientes(int? page = null)
+        {
+            page = (page ?? 1);
+            var user = db.Usuarios.Where(u => u.UserName == User.Identity.Name).FirstOrDefault();
+            if (user == null)
+            {
+                return RedirectToAction("Index", "Home");
+            }
+            var productos = db.Productos
+                .Include(p => p.Categoria)
+                .Include(p => p.Impuesto)
+                .Where(p => p.EmpresaID == user.EmpresaID && p.RecetaID == null)
                 .OrderBy(p => p.Categoria.Descripcion)
                 .ThenBy(p => p.Descripcion);
             return View(productos.ToPagedList((int)page, 4));
@@ -72,7 +89,6 @@ namespace ECommerce.Controllers
         {
             if (ModelState.IsValid)
             {
-                if(producto.RecetaID == 0) producto.RecetaID = null;
                 db.Productos.Add(producto);
                 var respuesta = DbHelper.Guardar(db);
                 if (respuesta.Succeeded == false)
@@ -121,7 +137,81 @@ namespace ECommerce.Controllers
             ViewBag.CategoriaID = new SelectList(CombosHelper.GetCategorias(user.EmpresaID), "CategoriaID", "Descripcion", producto.CategoriaID);
             ViewBag.ImpuestoID = new SelectList(CombosHelper.GetImpuestos(user.EmpresaID), "ImpuestoID", "Descripcion", producto.ImpuestoID);
             
+            return View(producto);
+        }
+
+        // GET: Productos/Create
+        public ActionResult Create2()
+        {
+            var user = db.Usuarios.Where(u => u.UserName == User.Identity.Name).FirstOrDefault();
+            ViewBag.CategoriaID = new SelectList(CombosHelper.GetCategorias(user.EmpresaID), "CategoriaID", "Descripcion");
+            ViewBag.ImpuestoID = new SelectList(CombosHelper.GetImpuestos(user.EmpresaID), "ImpuestoID", "Descripcion");
+            ViewBag.UnidadID = new SelectList(CombosHelper.GetUnidades(user.EmpresaID), "UnidadID", "Descripcion");
+            ViewBag.RecetaID = new SelectList(CombosHelper.GetRecetas(user.EmpresaID), "RecetaID", "Descripcion");
+            var producto = new Producto
+            { EmpresaID = user.EmpresaID, };
             return PartialView(producto);
+        }
+
+        // POST: Productos/Create
+        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
+        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Create2(Producto producto)
+        {
+            if (ModelState.IsValid)
+            {
+                producto.RecetaID = null;
+                db.Productos.Add(producto);
+                var respuesta = DbHelper.Guardar(db);
+                if (respuesta.Succeeded == false)
+                {
+                    ModelState.AddModelError(string.Empty, respuesta.Message);
+                    var user2 = db.Usuarios.Where(u => u.UserName == User.Identity.Name).FirstOrDefault();
+                    ViewBag.UnidadID = new SelectList(CombosHelper.GetUnidades(user2.EmpresaID), "UnidadID", "Descripcion", producto.UnidadID);
+                    ViewBag.RecetaID = new SelectList(CombosHelper.GetRecetas(user2.EmpresaID), "RecetaID", "Descripcion", producto.RecetaID);
+                    ViewBag.CategoriaID = new SelectList(CombosHelper.GetCategorias(user2.EmpresaID), "CategoriaID", "Descripcion", producto.CategoriaID);
+                    ViewBag.ImpuestoID = new SelectList(CombosHelper.GetImpuestos(user2.EmpresaID), "ImpuestoID", "Descripcion", producto.ImpuestoID);
+                    return View(producto);
+                }
+                if (producto.ImageFile != null)
+                {
+                    var folder = "~/Content/Images";
+                    var fileName = string.Format("{0}.jpg", producto.ProductoID);
+
+                    if (FilesHelper.SubirImagen(producto.ImageFile, folder,
+                        fileName))
+                    {
+
+                        var pic = string.Format("{0}/{1}", folder, fileName);
+                        producto.Image = pic;
+                        db.Entry(producto).State = EntityState.Modified;
+                        respuesta = DbHelper.Guardar(db);
+                        if (respuesta.Succeeded == false)
+                        {
+                            ModelState.AddModelError(string.Empty, respuesta.Message);
+                            var user2 = db.Usuarios.Where(u => u.UserName == User.Identity.Name).FirstOrDefault();
+                            ViewBag.UnidadID = new SelectList(CombosHelper.GetUnidades(user2.EmpresaID), "UnidadID", "Descripcion", producto.UnidadID);
+                            ViewBag.RecetaID = new SelectList(CombosHelper.GetRecetas(user2.EmpresaID), "RecetaID", "Descripcion", producto.RecetaID);
+                            ViewBag.CategoriaID = new SelectList(CombosHelper.GetCategorias(user2.EmpresaID), "CategoriaID", "Descripcion", producto.CategoriaID);
+                            ViewBag.ImpuestoID = new SelectList(CombosHelper.GetImpuestos(user2.EmpresaID), "ImpuestoID", "Descripcion", producto.ImpuestoID);
+                            return View(producto);
+                        }
+
+                    }
+
+                }
+                return RedirectToAction("Index");
+            }
+
+            var user = db.Usuarios.Where(u => u.UserName == User.Identity.Name).FirstOrDefault();
+            ViewBag.UnidadID = new SelectList(CombosHelper.GetUnidades(user.EmpresaID), "UnidadID", "Descripcion", producto.UnidadID);
+            ViewBag.RecetaID = new SelectList(CombosHelper.GetRecetas(user.EmpresaID), "RecetaID", "Descripcion", producto.RecetaID);
+            ViewBag.CategoriaID = new SelectList(CombosHelper.GetCategorias(user.EmpresaID), "CategoriaID", "Descripcion", producto.CategoriaID);
+            ViewBag.ImpuestoID = new SelectList(CombosHelper.GetImpuestos(user.EmpresaID), "ImpuestoID", "Descripcion", producto.ImpuestoID);
+
+            return View(producto);
         }
 
         // GET: Productos/Edit/5

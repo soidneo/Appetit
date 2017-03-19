@@ -100,21 +100,12 @@ namespace ECommerce.Clases
                     db.SaveChanges();
                     foreach (var detalle in detalles)
                     {
-                        var invProducto = db.Inventarios
-                            .Where(p => p.ProductoID == detalle.ProductoID
-                            && p.BodegaID == compra.BodegaID).FirstOrDefault();
-                        double stockActual = 0;
-                        if (invProducto != null)
+                        var rpta = new Respuesta();
+                        rpta = AddInventario(detalle.ProductoID, compra.BodegaID, detalle.Cantidad);
+                        if (!rpta.Succeeded)
                         {
-                            stockActual = invProducto.stock;
+                            return new Respuesta { Succeeded = false, Message = rpta.Message, };
                         }
-                        var inventario = new Inventario
-                        {
-                            BodegaID = compra.BodegaID,
-                            ProductoID = detalle.ProductoID,
-                            stock = stockActual + detalle.Cantidad,
-                        };
-                        db.Inventarios.Add(inventario);
                     }
                     db.SaveChanges();
                     transaction.Commit();
@@ -172,40 +163,27 @@ namespace ECommerce.Clases
                     {
                         var producto = db.Productos
                             .Where(p => p.ProductoID == detalle.ProductoID).FirstOrDefault();
-                        var productos = db.RecetaDetalles
-                            .Where(rd => rd.RecetaID == producto.RecetaID).ToList();
-                        foreach (var item in productos)
+                        if (producto.RecetaID == 1)
                         {
-                            var invProducto = db.Inventarios
-                            .Where(p => p.ProductoID == item.ProductoID
-                            && p.BodegaID == factura.BodegaID).FirstOrDefault();
-                            if (invProducto == null)
+                            var rpta = new Respuesta();
+                            rpta = DeductInventario(producto.ProductoID, factura.BodegaID, detalle.Cantidad);
+                            if (!rpta.Succeeded)
                             {
-                                return new Respuesta
-                                {
-                                    Succeeded = false,
-                                    Message = "No hay productos en inventario",
-                                };
+                                return new Respuesta { Succeeded = false, Message = rpta.Message, };
                             }
-                            var count = invProducto.stock;
-                            if (count >= (detalle.Cantidad * item.Cantidad))
+                        }
+                        else
+                        {
+                            var productos = db.RecetaDetalles
+                            .Where(rd => rd.RecetaID == producto.RecetaID).ToList();
+                            foreach (var item in productos)
                             {
-                                var inventario = new Inventario
+                                var rpta = new Respuesta();
+                                rpta = DeductInventario(producto.ProductoID, factura.BodegaID, detalle.Cantidad);
+                                if (!rpta.Succeeded)
                                 {
-                                    BodegaID = factura.BodegaID,
-                                    ProductoID = item.ProductoID,
-                                    stock = count - (detalle.Cantidad * item.Cantidad),
-                                };
-                                db.Inventarios.Add(inventario);
-                                db.Inventarios.Remove(invProducto);
-                            }
-                            else
-                            {
-                                return new Respuesta
-                                {
-                                    Succeeded = false,
-                                    Message = "No hay suficientes productos en inventario",
-                                };
+                                    return new Respuesta { Succeeded = false, Message = rpta.Message, };
+                                }
                             }
                         }
                     }
@@ -305,6 +283,90 @@ namespace ECommerce.Clases
                     transaction.Rollback();
                     return new Respuesta { Succeeded = false, Message = ex.Message, };
                 }
+            }
+        }
+
+        public static Respuesta DeductInventario(int productoID, int bodegaID, double cantidad)
+        {
+
+            var invProducto = db.Inventarios
+                    .Where(p => p.ProductoID == productoID
+                    && p.BodegaID == bodegaID).FirstOrDefault();
+            if (invProducto == null)
+            {
+                return new Respuesta
+                {
+                    Succeeded = false,
+                    Message = "No hay productos en inventario",
+                };
+            }
+            var count = invProducto.stock;
+            if (count >= cantidad)
+            {
+                var inventario = new Inventario
+                {
+                    BodegaID = bodegaID,
+                    ProductoID = productoID,
+                    stock = count - cantidad,
+                };
+                db.Inventarios.Add(inventario);
+                db.Inventarios.Remove(invProducto);
+            }
+            else
+            {
+                return new Respuesta
+                {
+                    Succeeded = false,
+                    Message = "No hay suficientes productos en inventario",
+                };
+            }
+            try
+            {
+                db.SaveChanges();
+                return new Respuesta { Succeeded = true, };
+            }
+            catch (Exception ex)
+            {
+                return new Respuesta { Succeeded = false, Message = ex.Message, };
+            }
+        }
+
+        public static Respuesta AddInventario(int productoID, int bodegaID, double cantidad)
+        {
+            var inventario = new Inventario();
+            var invProducto = db.Inventarios
+                    .Where(p => p.ProductoID == productoID
+                    && p.BodegaID == bodegaID).FirstOrDefault();
+            if (invProducto == null)
+            {
+                inventario = new Inventario
+                {
+                    BodegaID = bodegaID,
+                    ProductoID = productoID,
+                    stock = cantidad,
+                };
+                db.Inventarios.Add(inventario);
+            }
+            else
+            {
+                var count = invProducto.stock;
+                inventario = new Inventario
+                {
+                    BodegaID = bodegaID,
+                    ProductoID = productoID,
+                    stock = count + cantidad,
+                };
+                db.Inventarios.Add(inventario);
+                db.Inventarios.Remove(invProducto);
+            }
+            try
+            {
+                db.SaveChanges();
+                return new Respuesta { Succeeded = true, };
+            }
+            catch (Exception ex)
+            {
+                return new Respuesta { Succeeded = false, Message = ex.Message, };
             }
         }
 
