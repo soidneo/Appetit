@@ -23,7 +23,7 @@ namespace ECommerce.Clases
             {
                 try
                 {
-                    var user = db.Usuarios.Where(u => u.UserName == userName).FirstOrDefault();
+                    var user = db.Clientes.Where(u => u.UserName == userName).FirstOrDefault();
                     var venta = new Venta
                     {
                         EmpresaID = user.EmpresaID,
@@ -179,7 +179,7 @@ namespace ECommerce.Clases
                             foreach (var item in productos)
                             {
                                 var rpta = new Respuesta();
-                                rpta = DeductInventario(producto.ProductoID, factura.BodegaID, detalle.Cantidad);
+                                rpta = DeductInventario(item.ProductoID, factura.BodegaID, detalle.Cantidad*item.Cantidad);
                                 if (!rpta.Succeeded)
                                 {
                                     return new Respuesta { Succeeded = false, Message = rpta.Message, };

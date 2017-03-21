@@ -11,6 +11,7 @@ using ECommerce.Clases;
 
 namespace ECommerce.Controllers
 {
+    [Authorize(Roles = "Admin")]
     public class ComprasController : Controller
     {
         private ECommerceContext db = new ECommerceContext();

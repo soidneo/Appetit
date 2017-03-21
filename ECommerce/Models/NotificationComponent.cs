@@ -6,6 +6,8 @@ using System.Configuration;
 using System.Data.SqlClient;
 using System.Linq;
 
+
+
 namespace ECommerce.Hubs
 {
     public class NotificationComponent
@@ -14,7 +16,7 @@ namespace ECommerce.Hubs
         public void RegisterNotification(DateTime currentTime)
         {
             string conStr = ConfigurationManager.ConnectionStrings["DefaultConnection"].ConnectionString;
-            string sqlCommand = @"SELECT [PedidomesaID],[MesaID],[EstadoID] from [dbo].[Pedidomesas] where [fecha] > @AddedOn";
+            string sqlCommand = @"SELECT [PedidomesaID],[MesaID],[EstadoID],[Comentarios] from [dbo].[Pedidomesas] where [fecha] > @AddedOn";
             //you can notice here I have added table name like this [dbo].[Contacts] with [dbo], its mendatory when you use Sql Dependency
             using (SqlConnection con = new SqlConnection(conStr))
             {
@@ -54,8 +56,12 @@ namespace ECommerce.Hubs
 
         public List<PedidoMesa> GetContacts(DateTime afterDate)
         {
-            var pedidos = db.PedidoMesas.Where(m => m.Fecha > afterDate).OrderByDescending(m => m.Fecha).ToList();
-            return pedidos;
+            using (ECommerceContext dc = new ECommerceContext())
+            {
+                var pedidos = dc.PedidoMesas
+                    .Where(m => m.Fecha > afterDate).OrderByDescending(m => m.Fecha).ToList();
+                return pedidos;
+            }           
         }
     }
 }

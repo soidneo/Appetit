@@ -19,16 +19,16 @@ namespace ECommerce.Controllers
 
         public ActionResult AddProducto()
         {
-            var user = db.Usuarios.Where(u => u.UserName == User.Identity.Name).FirstOrDefault();
+            var user = db.Clientes.Where(u => u.UserName == User.Identity.Name).FirstOrDefault();
             ViewBag.ProductoID = new SelectList(db.Productos.Where(p => p.EmpresaID == user.EmpresaID &&
-            p.RecetaID != null || p.RecetaID == 1), "ProductoID", "Descripcion");
+            p.RecetaID != null || p.EmpresaID == user.EmpresaID && p.RecetaID == 1), "ProductoID", "Descripcion");
             return PartialView();
         }
 
         [HttpPost]
         public ActionResult AddProducto(AddProductoVista vista)
         {
-            var user = db.Usuarios.Where(u => u.UserName == User.Identity.Name).FirstOrDefault();
+            var user = db.Clientes.Where(u => u.UserName == User.Identity.Name).FirstOrDefault();
             if (ModelState.IsValid)
             {
                 var producto = db.Productos.Find(vista.ProductoID);
