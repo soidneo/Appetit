@@ -1,42 +1,85 @@
 ﻿@model ECommerce.Models.Receta
-
 @{
     ViewBag.Title = "Details";
 }
 
-<h2>Details</h2>
+<br />
+<h2>Receta @Html.DisplayFor(model => model.RecetaID)</h2>
 
-<div>
-    <h4>Receta</h4>
-    <hr />
-    <dl class="dl-horizontal">
-        <dt>
-            @Html.DisplayNameFor(model => model.Empresa.Nombre)
-        </dt>
 
-        <dd>
-            @Html.DisplayFor(model => model.Empresa.Nombre)
-        </dd>
+<div class="row">
+    <div class="col-md-6">
+        <div>
+            <h4>Información</h4>
+            <hr />
+            <dl class="dl-horizontal">
+                
+                <dt>
+                    @Html.DisplayNameFor(model => model.Descripcion)
+                </dt>
+                <dd>
+                    @Html.DisplayFor(model => model.Descripcion)
+                </dd>
+                <dt>
+                    @Html.DisplayNameFor(model => model.Comentarios)
+                </dt>
+                <dd>
+                    @Html.DisplayFor(model => model.Comentarios)
+                </dd>
+            </dl>
+        </div>
+        <p>
+            @Html.ActionLink("Edit", "Edit", new { id = Model.RecetaID }, new { @class = "btn btn-warning" })
+            @Html.ActionLink("Volver", "Index", new { }, new { @class = "btn btn-primary" })
+        </p>
+    </div>
+    <div class="col-md-6">
+        <div>
+            <h4>Detalles</h4>
+            <hr />
+            @if (Model.RecetaDetalles.Count == 0)
+            {
+                <h5>No hay Detalles</h5>
+            }
+            else
+            {
+                <table class="table">
+                    <tr>
+                        <th>
+                            Producto
+                        </th>
+                        <th width="80px">
+                            Cantidad
+                        </th>
+                        <th>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.Descripcion)
-        </dt>
+                        </th>
+                    </tr>
 
-        <dd>
-            @Html.DisplayFor(model => model.Descripcion)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.Comentarios)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.Comentarios)
-        </dd>
-
-    </dl>
+                    @foreach (var item in Model.RecetaDetalles.ToList())
+                {
+                        <tr>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Producto.Descripcion)
+                            </td>
+                            <td align="right">
+                                @Html.DisplayFor(modelItem => item.Cantidad)
+                            </td>
+                            <td align="left">
+                                @Html.DisplayFor(modelItem => item.Producto.Unidad.Descripcion)
+                            </td>
+                        </tr>
+                    }
+                    <tr>
+                        <td>
+                            <strong>Comentarios</strong>
+                        </td>
+                        <td align="right">
+                            <strong>@Html.DisplayFor(modelItem => Model.Comentarios)</strong>
+                        </td>
+                    </tr>
+                </table>
+            }
+        </div>
+    </div>
 </div>
-<p>
-    @Html.ActionLink("Edit", "Edit", new { id = Model.RecetaID }) |
-    @Html.ActionLink("Back to List", "Index")
-</p>

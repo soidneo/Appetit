@@ -1,74 +1,106 @@
 ﻿@model ECommerce.Models.Compra
-
 @{
     ViewBag.Title = "Details";
 }
+<br />
+<h2>Compra @Html.DisplayFor(model => model.CompraID)</h2>
+<div class="row">
+    <div class="col-md-6">
+        <div>
+            <h4>Información</h4>
+            <hr />
+            <dl class="dl-horizontal">
+                <dt>
+                    @Html.DisplayNameFor(model => model.Bodega.Nombre)
+                </dt>
+                <dd>
+                    @Html.DisplayFor(model => model.Bodega.Nombre)
+                </dd>
+                
+                <dt>
+                    @Html.DisplayNameFor(model => model.Estado.Descripcion)
+                </dt>
+                <dd>
+                    @Html.DisplayFor(model => model.Estado.Descripcion)
+                </dd>
+                <dt>
+                    @Html.DisplayNameFor(model => model.FormaPago.Descripcion)
+                </dt>
+                <dd>
+                    @Html.DisplayFor(model => model.FormaPago.Descripcion)
+                </dd>
+                <dt>
+                    @Html.DisplayNameFor(model => model.Proveedor.UserName)
+                </dt>
+                <dd>
+                    @Html.DisplayFor(model => model.Proveedor.UserName)
+                </dd>
+                <dt>
+                    @Html.DisplayNameFor(model => model.Fecha)
+                </dt>
+                <dd>
+                    @Html.DisplayFor(model => model.Fecha)
+                </dd>
+                <dt>
+                    @Html.DisplayNameFor(model => model.Comentarios)
+                </dt>
+                <dd>
+                    @Html.DisplayFor(model => model.Comentarios)
+                </dd>
+            </dl>
+        </div>
+        <p>
+            @Html.ActionLink("Edit", "Edit", new { id = Model.CompraID }, new { @class = "btn btn-warning" })
+            @Html.ActionLink("Volver", "Index", new { }, new { @class = "btn btn-primary" })
+        </p>
+    </div>
+    <div class="col-md-6">
+        <div>
+            <h4>Detalles</h4>
+            <hr />
+            @if (Model.CompraDetalles.Count == 0)
+            {
+                <h5>No hay Detalles</h5>
+            }
+            else
+            {
+                <table class="table">
+                    <tr>
+                        <th>
+                            Producto
+                        </th>
+                        <th width="80px">
+                            Cantidad
+                        </th>
+                        <th>
 
-<h2>Details</h2>
+                        </th>
+                    </tr>
 
-<div>
-    <h4>Compra</h4>
-    <hr />
-    <dl class="dl-horizontal">
-        <dt>
-            @Html.DisplayNameFor(model => model.Bodega.Nombre)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.Bodega.Nombre)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.Empresa.Nombre)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.Empresa.Nombre)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.Estado.Descripcion)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.Estado.Descripcion)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.FormaPago.Descripcion)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.FormaPago.Descripcion)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.Proveedor.UserName)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.Proveedor.UserName)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.Fecha)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.Fecha)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.Comentarios)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.Comentarios)
-        </dd>
-
-    </dl>
+                    @foreach (var item in Model.CompraDetalles.ToList())
+                {
+                        <tr>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Producto.Descripcion)
+                            </td>
+                            <td align="right">
+                                @Html.DisplayFor(modelItem => item.Cantidad)
+                            </td>
+                            <td align="left">
+                                @Html.DisplayFor(modelItem => item.Producto.Unidad.Descripcion)
+                            </td>
+                        </tr>
+                    }
+                    <tr>
+                        <td>
+                            <strong>Estado</strong>
+                        </td>
+                        <td align="right">
+                            <strong>@Html.DisplayFor(modelItem => Model.Estado.Descripcion)</strong>
+                        </td>
+                    </tr>
+                </table>
+            }
+        </div>
+    </div>
 </div>
-<p>
-    @Html.ActionLink("Edit", "Edit", new { id = Model.CompraID }) |
-    @Html.ActionLink("Back to List", "Index")
-</p>

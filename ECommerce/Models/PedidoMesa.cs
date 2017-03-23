@@ -37,6 +37,6 @@ namespace ECommerce.Models
         public virtual Estado Estado { get; set; }
         public virtual Empresa Empresas { get; set; }
         public virtual ICollection<Factura> Factura { get; set; }
-        public virtual ICollection<PedidoMesaDetalle> VentaDetalles { get; set; }
+        public virtual ICollection<PedidoMesaDetalle> PedidoMesaDetalles { get; set; }
     }
 }
